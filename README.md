@@ -1,0 +1,1 @@
+This is a site to show my resume and practical technical knowledge
