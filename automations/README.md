@@ -1,0 +1,1 @@
+The information im taking using this form is used to let me know everytime there's an entry to my resume site, and then so that i know who is looking at my resume(makes me feel better)
