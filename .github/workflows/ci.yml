@@ -38,23 +38,32 @@ jobs:
           type=sha,prefix={{branch}}-
           type=raw,value=latest,enable={{is_default_branch}}
 
-    - name: Build Docker image
+    - name: Build Docker image for testing
       uses: docker/build-push-action@v5
+      id: build
       with:
         context: .
         file: ./docker/Dockerfile
         push: false
-        tags: ${{ steps.meta.outputs.tags }}
+        load: true
+        tags: resume-site:test
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
     - name: Test Docker image
       run: |
-        # Get the first tag from the meta output
-        IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1 | tr -d ' ')
+        echo "Testing image: resume-site:test"
+        
+        # Verify image exists locally
+        if ! docker image inspect resume-site:test > /dev/null 2>&1; then
+          echo "Error: Image resume-site:test not found locally"
+          echo "Available images:"
+          docker images
+          exit 1
+        fi
         
         # Start container in background
-        CONTAINER_ID=$(docker run -d -p 8080:8080 $IMAGE_TAG)
+        CONTAINER_ID=$(docker run -d -p 8080:8080 resume-site:test)
         
         # Wait for container to be ready (with retries)
         echo "Waiting for container to be ready..."
@@ -142,18 +151,15 @@ jobs:
     - name: Tag and push to Docker Hub
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       run: |
-        # Get the first tag (branch name tag) to use as source
-        SOURCE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1 | tr -d ' ')
         VERSION_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }}"
         LATEST_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE }}:latest"
         
-        echo "Source tag: $SOURCE_TAG"
         echo "Version tag: $VERSION_TAG"
         echo "Latest tag: $LATEST_TAG"
         
-        # Tag the image
-        docker tag $SOURCE_TAG $VERSION_TAG
-        docker tag $SOURCE_TAG $LATEST_TAG
+        # Tag the tested image
+        docker tag resume-site:test $VERSION_TAG
+        docker tag resume-site:test $LATEST_TAG
         
         # Push both tags
         docker push $VERSION_TAG
