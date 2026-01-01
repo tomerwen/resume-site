@@ -208,4 +208,3 @@ jobs:
           git push
           echo "Successfully updated deployment manifest in Git"
         fi
-
