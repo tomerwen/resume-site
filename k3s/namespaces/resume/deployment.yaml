@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: resume-site
-        image: PLACEHOLDER_DOCKERHUB_USERNAME/resume-site:latest  # Will be updated by CI
+        image: jaanuk/resume-site:v0.0.1
         ports:
         - containerPort: 8080
           name: http
