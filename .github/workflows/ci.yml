@@ -10,6 +10,10 @@ env:
   DOCKER_IMAGE: resume-site
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -17,6 +21,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -166,4 +172,40 @@ jobs:
         docker push $LATEST_TAG
         
         echo "Successfully pushed $VERSION_TAG and $LATEST_TAG to Docker Hub"
+        
+        # Store image reference for next step
+        echo "IMAGE_REF=$LATEST_TAG" >> $GITHUB_ENV
+        echo "VERSION_IMAGE_REF=$VERSION_TAG" >> $GITHUB_ENV
+
+    - name: Update deployment manifest
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        DEPLOYMENT_FILE="k3s/namespaces/resume/deployment.yaml"
+        
+        # Update the image in deployment.yaml
+        # Replace any existing image reference with the new version tag
+        sed -i "s|image:.*resume-site:.*|image: ${{ env.VERSION_IMAGE_REF }}|g" $DEPLOYMENT_FILE
+        
+        echo "Updated $DEPLOYMENT_FILE with image: ${{ env.VERSION_IMAGE_REF }}"
+        
+        # Show the change
+        git diff $DEPLOYMENT_FILE || true
+
+    - name: Commit and push deployment update
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        DEPLOYMENT_FILE="k3s/namespaces/resume/deployment.yaml"
+        
+        # Check if there are changes to commit
+        if git diff --quiet $DEPLOYMENT_FILE; then
+          echo "No changes to commit"
+        else
+          git add $DEPLOYMENT_FILE
+          git commit -m "chore: update deployment image to ${{ steps.version.outputs.version }} [skip ci]"
+          git push
+          echo "Successfully updated deployment manifest in Git"
+        fi
 
