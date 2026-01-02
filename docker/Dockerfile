@@ -1,7 +1,7 @@
 # Stage 1: Dependencies
 FROM node:20-alpine AS dependencies
 WORKDIR /app
-COPY site/package.json ./
+COPY package.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 # Stage 2: Production Environment
@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 
 # Copy application files
-COPY site/package.json ./
+COPY package.json ./
 COPY backend/ ./backend/
 COPY site/ ./site/
 
