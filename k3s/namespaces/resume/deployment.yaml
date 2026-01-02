@@ -39,6 +39,10 @@ kind: Service
 metadata:
   name: resume-site
   namespace: resume
+  annotations:
+    # Optional: Add annotations for your LoadBalancer provider if needed
+    # For example, if using MetalLB:
+    # metallb.universe.tf/allow-shared-ip: "shared"
 spec:
   selector:
     app: resume-site
@@ -47,5 +51,5 @@ spec:
     targetPort: 8080
     protocol: TCP
     name: http
-  type: ClusterIP
+  type: LoadBalancer
 
