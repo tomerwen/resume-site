@@ -34,10 +34,6 @@ kind: Service
 metadata:
   name: resume-site
   namespace: resume
-  annotations:
-    # Optional: Add annotations for your LoadBalancer provider if needed
-    # For example, if using MetalLB:
-    # metallb.universe.tf/allow-shared-ip: "shared"
 spec:
   selector:
     app: resume-site
@@ -46,5 +42,28 @@ spec:
     targetPort: 8080
     protocol: TCP
     name: http
-  type: LoadBalancer
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: resume-site
+  namespace: resume
+  annotations:
+    # Traefik ingress class (default in k3s)
+    kubernetes.io/ingress.class: traefik
+    # Optional: Enable TLS/HTTPS redirect
+    traefik.ingress.kubernetes.io/redirect-to-https: "true"
+spec:
+  rules:
+  - host: resume.jaanuk-server.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: resume-site
+            port:
+              number: 80
 
