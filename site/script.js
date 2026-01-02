@@ -5,10 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const payload = {
-            firstName: document.getElementById('firstName').value,
-            company: document.getElementById('company').value,
-            role: document.getElementById('role').value,
-            timestamp: new Date().toISOString(),
+            firstName: document.getElementById('firstName').value.trim(),
+            company: document.getElementById('company').value.trim(),
+            role: document.getElementById('role').value.trim(),
             userAgent: navigator.userAgent
         };
 
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.style.background = '';
             }, 2000);
         } catch (error) {
-            console.error('Webhook failed', error);
+            console.error('Form submission failed', error);
             submitBtn.innerText = 'Error - Try Again';
             submitBtn.style.background = '#ef4444';
             
