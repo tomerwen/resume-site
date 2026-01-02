@@ -1,7 +1,7 @@
 # Stage 1: Dependencies
 FROM node:20-alpine AS dependencies
 WORKDIR /app
-COPY package.json ./
+COPY site/package.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 # Stage 2: Production Environment
