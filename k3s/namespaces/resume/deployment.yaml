@@ -50,11 +50,10 @@ metadata:
   name: resume-site
   namespace: resume
   annotations:
-    # Traefik ingress class (default in k3s)
-    kubernetes.io/ingress.class: traefik
-    # Optional: Enable TLS/HTTPS redirect
-    traefik.ingress.kubernetes.io/redirect-to-https: "true"
+    # Optional: Enable TLS/HTTPS redirect (commented out since Cloudflare handles SSL)
+    # traefik.ingress.kubernetes.io/redirect-to-https: "true"
 spec:
+  ingressClassName: traefik
   rules:
   - host: resume.jaanuk-server.org
     http:
