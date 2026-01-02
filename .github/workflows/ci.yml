@@ -68,8 +68,15 @@ jobs:
           exit 1
         fi
         
-        # Start container in background
-        CONTAINER_ID=$(docker run -d -p 8080:8080 resume-site:test)
+        # Start container in background with dummy DB credentials for testing
+        # (The container will start but DB operations will fail, which is fine for basic testing)
+        CONTAINER_ID=$(docker run -d -p 8080:8080 \
+          -e POSTGRES_HOST=localhost \
+          -e POSTGRES_PORT=5432 \
+          -e POSTGRES_DB=test \
+          -e POSTGRES_USER=test \
+          -e POSTGRES_PASSWORD=test \
+          resume-site:test)
         
         # Wait for container to be ready (with retries)
         echo "Waiting for container to be ready..."
