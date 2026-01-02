@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 
 # Copy application files
-COPY package.json ./
+COPY site/package.json ./
 COPY backend/ ./backend/
 COPY site/ ./site/
 
