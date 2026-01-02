@@ -124,16 +124,23 @@ jobs:
       if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       id: version
       run: |
-        # Fetch all tags
-        git fetch --tags || true
+        DEPLOYMENT_FILE="k3s/namespaces/resume/deployment.yaml"
         
-        # Get the latest tag or default to 0.0.0
-        CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        # Extract current version from deployment.yaml
+        # Look for line like: image: jaanuk/resume-site:v0.1.0
+        IMAGE_LINE=$(grep "image:.*resume-site:" "$DEPLOYMENT_FILE" | head -1)
+        CURRENT_VERSION=$(echo "$IMAGE_LINE" | sed -n 's/.*resume-site:\(v\?[0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p')
+        
+        # Default to v0.0.0 if not found
+        if [ -z "$CURRENT_VERSION" ]; then
+          CURRENT_VERSION="v0.0.0"
+        fi
+        
         # Remove 'v' prefix if present
-        CURRENT_TAG=${CURRENT_TAG#v}
+        CURRENT_VERSION=${CURRENT_VERSION#v}
         
         # Split version into parts
-        IFS='.' read -ra VERSION <<< "$CURRENT_TAG"
+        IFS='.' read -ra VERSION <<< "$CURRENT_VERSION"
         MAJOR=${VERSION[0]:-0}
         MINOR=${VERSION[1]:-0}
         PATCH=${VERSION[2]:-0}
@@ -158,7 +165,7 @@ jobs:
         
         NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
         echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-        echo "Current tag: $CURRENT_TAG"
+        echo "Current version from deployment.yaml: v$CURRENT_VERSION"
         echo "New version: $NEW_VERSION"
 
     - name: Tag and push to Docker Hub
@@ -190,10 +197,15 @@ jobs:
         DEPLOYMENT_FILE="k3s/namespaces/resume/deployment.yaml"
         
         # Update the image in deployment.yaml
-        # Replace any existing image reference with the new version tag
-        sed -i "s|image:.*resume-site:.*|image: ${{ env.VERSION_IMAGE_REF }}|g" $DEPLOYMENT_FILE
+        # Replace the image line with the new version tag
+        # Pattern matches: image: jaanuk/resume-site:vX.X.X
+        sed -i "s|image:\s*jaanuk/resume-site:.*|image: ${{ env.VERSION_IMAGE_REF }}|g" $DEPLOYMENT_FILE
         
         echo "Updated $DEPLOYMENT_FILE with image: ${{ env.VERSION_IMAGE_REF }}"
+        
+        # Verify the update
+        echo "Current image in deployment.yaml:"
+        grep "image:" $DEPLOYMENT_FILE | grep resume-site || true
         
         # Show the change
         git diff $DEPLOYMENT_FILE || true
