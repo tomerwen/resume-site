@@ -1,24 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('visitorModal');
     const form = document.getElementById('visitorForm');
 
-    // Check if user has already identified themselves
-    if (!localStorage.getItem('visitor_identified')) {
-        modal.style.display = 'flex';
-    }
-
-    const closeBtn = document.getElementById('closeModal');
-    
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-        // Close modal if clicking outside the box
-        window.addEventListener('click', (event) => {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        });
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -35,18 +17,39 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerText = 'Connecting...';
 
         try {
-            // Replace with  actual n8n Webhook URL
-            await fetch('https://n8n.yourdomain.com/webhook/visitor-hit', {
+            // Send to backend API which saves to PostgreSQL
+            const response = await fetch('/api/visitors', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            localStorage.setItem('visitor_identified', 'true');
-            modal.style.display = 'none';
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            submitBtn.innerText = 'Submitted!';
+            submitBtn.style.background = '#10b981';
+            
+            // Clear form after successful submission
+            form.reset();
+            
+            // Re-enable button after a delay
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit';
+                submitBtn.style.background = '';
+            }, 2000);
         } catch (error) {
             console.error('Webhook failed', error);
-            modal.style.display = 'none';
+            submitBtn.innerText = 'Error - Try Again';
+            submitBtn.style.background = '#ef4444';
+            
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit';
+                submitBtn.style.background = '';
+            }, 2000);
         }
     });
 });

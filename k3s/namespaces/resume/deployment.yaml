@@ -21,12 +21,26 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+        env:
+        - name: POSTGRES_HOST
+          value: "postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "postgres"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: postgres-password
         resources:
           requests:
-            memory: "64Mi"
+            memory: "128Mi"
             cpu: "100m"
           limits:
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "200m"
 ---
 apiVersion: v1
@@ -49,9 +63,6 @@ kind: Ingress
 metadata:
   name: resume-site
   namespace: resume
-  annotations:
-    # Optional: Enable TLS/HTTPS redirect (commented out since Cloudflare handles SSL)
-    # traefik.ingress.kubernetes.io/redirect-to-https: "true"
 spec:
   ingressClassName: traefik
   rules:

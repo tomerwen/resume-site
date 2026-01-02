@@ -13,32 +13,33 @@
         <p class="subtitle">Deployed via GitOps | Managed by K3s | Monitored by grafana</p>
     </header>
 
-    <main>
-        <section class="architecture">
-            <h2>System Architecture</h2>
-            <div class="card">
-                <p>This site isn't just a resume,it's a live demonstration. It was built, scanned, and deployed automatically through a hardened CI/CD pipeline.</p>
-                <ul>
-                    <li><strong>Runtime:</strong> K3s (Kubernetes)</li>
-                    <li><strong>CD:</strong> ArgoCD (GitOps)</li>
-                    <li><strong>Automation:</strong> n8n Webhooks</li>
-                </ul>
-            </div>
-        </section>
-    </main>
+    <div class="container">
+        <main>
+            <section class="architecture">
+                <h2>System Architecture</h2>
+                <div class="card">
+                    <p>This site isn't just a resume,it's a live demonstration. It was built, scanned, and deployed automatically through a hardened CI/CD pipeline.</p>
+                    <ul>
+                        <li><strong>Runtime:</strong> K3s (Kubernetes)</li>
+                        <li><strong>CD:</strong> ArgoCD (GitOps)</li>
+                        <li><strong>Automation:</strong> n8n Webhooks</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
 
-    <div id="visitorModal" class="modal">
-        <div class="modal-content">
-            <span id="closeModal" class="close-btn">&times;</span>
-            <h3>Welcome!</h3>
-            <p>I track visits to test my n8n automation pipeline. Mind sharing who's looking?</p>
-            <form id="visitorForm">
-                <input type="text" id="firstName" placeholder="First Name" required>
-                <input type="text" id="company" placeholder="Company Name" required>
-                <input type="text" id="role" placeholder="Your Position (e.g. Hiring Manager)" required>
-                <button type="submit" id="submitBtn">Enter Site</button>
-            </form>
-        </div>
+        <aside id="visitorSidebar" class="sidebar">
+            <div class="sidebar-content">
+                <h3>Welcome!</h3>
+                <p>Tracking visits to my resume, please share who's looking :) </p>
+                <form id="visitorForm">
+                    <input type="text" id="firstName" placeholder="First Name" required>
+                    <input type="text" id="company" placeholder="Company Name" required>
+                    <input type="text" id="role" placeholder="Your Position (e.g. Hiring Manager)" required>
+                    <button type="submit" id="submitBtn">Submit</button>
+                </form>
+            </div>
+        </aside>
     </div>
 
     <script src="script.js"></script>
