@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: resume-site
-        image: jaanuk/resume-site:v0.1.0
+        image: jaanuk/resume-site:v0.0.1
         ports:
         - containerPort: 8080
           name: http
