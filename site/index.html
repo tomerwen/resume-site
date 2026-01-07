@@ -3,44 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Portfolio | Infrastructure as Code</title>
+    <title>Cloud & Platform Engineer | Live DevOps Portfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>Cloud & Platform Engineer</h1>
-        <p class="subtitle">Deployed via GitOps | Managed by K3s | Monitored by grafana</p>
+        <div class="header-content">
+            <h1>Cloud & Platform Engineer</h1>
+            <p class="subtitle">Infrastructure as Code | GitOps | Observability</p>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>Live Production Environment</span>
+            </div>
+        </div>
     </header>
 
     <div class="container">
         <main>
+            <section class="hero">
+                <div class="card">
+                    <h2>🚀 This Isn't Just a Resume</h2>
+                    <p class="lead">This is a <strong>live production system</strong> running on Kubernetes, demonstrating real-world DevOps practices. Every commit triggers automated builds, security scans, and zero-downtime deployments.</p>
+                </div>
+            </section>
+
             <section class="architecture">
                 <h2>System Architecture</h2>
                 <div class="card">
-                    <p>This site isn't just a resume,it's a live demonstration. It was built, scanned, and deployed automatically through a hardened CI/CD pipeline.</p>
-                    <ul>
-                        <li><strong>Runtime:</strong> K3s (Kubernetes)</li>
-                        <li><strong>CD:</strong> ArgoCD (GitOps)</li>
-                        <li><strong>Automation:</strong> n8n Webhooks</li>
-                    </ul>
+                    <div class="tech-grid">
+                        <div class="tech-item">
+                            <div class="tech-icon">☸️</div>
+                            <h3>K3s</h3>
+                            <p>Lightweight Kubernetes</p>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon">🔄</div>
+                            <h3>ArgoCD</h3>
+                            <p>GitOps Continuous Delivery</p>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon">🐳</div>
+                            <h3>Docker</h3>
+                            <p>Containerized Applications</p>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon">📊</div>
+                            <h3>Grafana</h3>
+                            <p>Observability & Monitoring</p>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon">📈</div>
+                            <h3>Prometheus</h3>
+                            <p>Metrics Collection</p>
+                        </div>
+                        <div class="tech-item">
+                            <div class="tech-icon">🗄️</div>
+                            <h3>PostgreSQL</h3>
+                            <p>Persistent Data Storage</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="pipeline">
+                <h2>CI/CD Pipeline</h2>
+                <div class="card">
+                    <div class="pipeline-flow">
+                        <div class="pipeline-step">
+                            <div class="step-number">1</div>
+                            <h3>Code Push</h3>
+                            <p>GitHub Actions triggered</p>
+                        </div>
+                        <div class="pipeline-arrow">→</div>
+                        <div class="pipeline-step">
+                            <div class="step-number">2</div>
+                            <h3>Build & Test</h3>
+                            <p>Docker image built & validated</p>
+                        </div>
+                        <div class="pipeline-arrow">→</div>
+                        <div class="pipeline-step">
+                            <div class="step-number">3</div>
+                            <h3>Security Scan</h3>
+                            <p>Vulnerability assessment</p>
+                        </div>
+                        <div class="pipeline-arrow">→</div>
+                        <div class="pipeline-step">
+                            <div class="step-number">4</div>
+                            <h3>Deploy</h3>
+                            <p>ArgoCD syncs to cluster</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <h2>Key Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>🔒 Security First</h3>
+                        <p>Rate limiting, input validation, security headers, and non-root containers</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📊 Observability</h3>
+                        <p>Full-stack monitoring with Prometheus metrics and Grafana dashboards</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🔄 GitOps</h3>
+                        <p>Infrastructure and deployments managed declaratively through Git</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💾 Data Persistence</h3>
+                        <p>PostgreSQL with persistent volumes for reliable data storage</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🚀 Zero Downtime</h3>
+                        <p>Rolling updates ensure continuous availability</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📦 Infrastructure as Code</h3>
+                        <p>All infrastructure defined in YAML, version controlled</p>
+                    </div>
                 </div>
             </section>
         </main>
 
         <aside id="visitorSidebar" class="sidebar">
             <div class="sidebar-content">
-                <h3>Welcome!</h3>
-                <p>Tracking visits to my resume, please share who's looking :) </p>
+                <h3>👋 Let's Connect!</h3>
+                <p>I'm tracking visits to showcase engagement. Help me improve by sharing your details.</p>
                 <form id="visitorForm">
                     <input type="text" id="firstName" placeholder="First Name" required>
                     <input type="text" id="company" placeholder="Company Name" required>
-                    <input type="text" id="role" placeholder="Your Position (e.g. Hiring Manager)" required>
+                    <input type="text" id="role" placeholder="Your Position" required>
                     <button type="submit" id="submitBtn">Submit</button>
                 </form>
+                <div class="sidebar-footer">
+                    <p><small>Data stored securely in PostgreSQL</small></p>
+                </div>
             </div>
         </aside>
     </div>
+
+    <footer>
+        <p>Built with modern DevOps practices • <a href="https://github.com" target="_blank">View Source</a></p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
