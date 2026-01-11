@@ -13,10 +13,38 @@ env:
 permissions:
   contents: write
   pull-requests: read
+  security-events: write
 
 jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Run Trivy vulnerability scanner on repository
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-fs-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy filesystem results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-fs-results.sarif'
+
   build-and-test:
     runs-on: ubuntu-latest
+    needs: security-scan
+    environment:
+      name: deployment-approval
+      url: https://github.com/${{ github.repository }}
     
     steps:
     - name: Checkout code
@@ -55,6 +83,20 @@ jobs:
         tags: resume-site:test
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: Run Trivy vulnerability scanner on Docker image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: resume-site:test
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
 
     - name: Test Docker image
       run: |
